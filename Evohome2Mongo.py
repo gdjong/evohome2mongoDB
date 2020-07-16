@@ -12,14 +12,12 @@ password = config['DB_Credentials']['pass']
 url = config['DB_Credentials']['url']
 database = config['DB_Credentials']['database']
 collection = config['DB_Credentials']['collection']
-zonelist = config['Evohome']['zonelist']
 
 print (user)
 print (password)
 print (url)
 print (database)
 print (collection)
-print (zonelist)
 
 client = MongoClient("mongodb+srv://" + user + ":" + password + "@" + url + "/?retryWrites=true&w=majority")
 db = client[database]
