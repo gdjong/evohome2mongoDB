@@ -8,7 +8,7 @@
 
 1. Start the Evohome reader to MQTT writer process in a separate shell via command
 
-   `evohome2mqtt --user engelendom@gmail.com --password gertpwHoney1 -l debug`
+   `evohome2mqtt --user <username> --password <password> -l debug`
 
 ## EvohomeReader
 

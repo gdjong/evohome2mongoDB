@@ -41,13 +41,23 @@ def on_message(client, userdata, msg):
     timestamp = timestampms / 1000
     readableDatetime = datetime.datetime.fromtimestamp(timestamp)
     reqTemp = payload['state']['changeableValues']['heatSetpoint']['value']
+    reqStatus = payload['state']['changeableValues']['heatSetpoint']['status']
+    reqUntil = payload['state']['changeableValues']['heatSetpoint']['nextTime']
+    
     print("Topic: " + msg.topic)
     print ("Datetime: " + readableDatetime.strftime('%d-%m-%Y %H:%M:%S'))
     print ("Temp: " + str(temp))
-    print ("Request Temp: " + str(reqTemp))
-    rec = coll.insert_one({"zone": msg.topic,
-                           "currentTemp": temp,
-                           "requestedTemp": reqTemp,})
+    print ("Request Temp: " + str(reqTemp) + "\tuntil " + reqUntil + "\tStatus: " + reqStatus)
+
+    rec = coll.find_one({"zone": msg.topic,
+                          "date": readableDatetime.strftime('%d-%m-%Y')})
+    if not rec:
+        rec = coll.insert_one({"zone": msg.topic,
+                          "date": readableDatetime.strftime('%d-%m-%Y')})
+    
+    coll.update_one({"zone": msg.topic, "date": readableDatetime.strftime('%d-%m-%Y')},
+                           {"$push" : {"readings" : 
+                           { "currentTemp": temp,"requestedTemp": reqTemp, "until" : reqUntil, "status" : reqStatus}}})
 
 
 # Create an MQTT client and attach our routines to it.
@@ -59,6 +69,6 @@ client.connect("localhost", 1883, 60)
  
 # Process network traffic and dispatch callbacks. This will also handle
 # reconnecting. Check the documentation at
-# https://github.com/eclipse/paho.mqtt.python
+# https://github.com/eclipse/paho.m
 # for information on how to use other loop*() functions
 client.loop_forever()
