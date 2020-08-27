@@ -80,6 +80,8 @@ The following structure is received from a queue for a specific zone
 
 ## Data Format of JSON to be stored in DB
 
+The "bucket" schema design pattern is used to store the data into the database. Per day and per zone, one document is used to store the data.
+
 {
   "zone": "gert",
   "reading": {
